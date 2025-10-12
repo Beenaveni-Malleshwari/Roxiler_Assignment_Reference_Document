@@ -1,0 +1,289 @@
+.dashboard {
+  padding: 20px 0;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-header p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.dashboard-nav {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-nav button {
+  width: auto;
+  padding: 0.5rem 1rem;
+  background-color: #ecf0f1;
+  color: #2c3e50;
+  border: 1px solid #bdc3c7;
+}
+
+.dashboard-nav button:hover {
+  background-color: #d5dbdb;
+}
+
+.dashboard-nav button.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.stats-grid,
+.owner-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.stat-card h3 {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.table-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.data-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.role-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.role-admin {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.role-owner {
+  background-color: #f39c12;
+  color: white;
+}
+
+.role-user {
+  background-color: #27ae60;
+  color: white;
+}
+
+.rating {
+  color: #f39c12;
+  font-weight: 500;
+}
+
+.form-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 500px;
+}
+
+.search-section {
+  margin-bottom: 2rem;
+}
+
+.search-form {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-form input {
+  flex: 1;
+  min-width: 250px;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.search-form button {
+  width: auto;
+  padding: 0.75rem 1.5rem;
+}
+
+.stores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.store-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 1px solid #ecf0f1;
+}
+
+.store-card h3 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.store-email {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.store-address {
+  color: #555;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.rating-section {
+  border-top: 1px solid #ecf0f1;
+  padding-top: 1rem;
+}
+
+.overall-rating {
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.user-rating label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.star-btn {
+  width: auto;
+  padding: 0.5rem;
+  background-color: #ecf0f1;
+  color: #7f8c8d;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.star-btn:hover {
+  background-color: #d5dbdb;
+}
+
+.star-btn.active {
+  background-color: #f39c12;
+  color: white;
+  border-color: #f39c12;
+}
+
+.star-btn.has-rating {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.current-rating {
+  font-size: 0.9rem;
+  color: #27ae60;
+  font-weight: 500;
+}
+
+.raters-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .dashboard-nav {
+    flex-direction: column;
+  }
+  
+  .dashboard-nav button {
+    width: 100%;
+  }
+  
+  .search-form {
+    flex-direction: column;
+  }
+  
+  .search-form input,
+  .search-form button {
+    width: 100%;
+  }
+  
+  .stats-grid,
+  .owner-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .stores-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .data-table {
+    font-size: 0.9rem;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 0.5rem;
+  }
+}

@@ -128,16 +128,16 @@ const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map(user => (
-                    <tr key={user.id}>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
+                  {users.map((user, idx) => (
+                    <tr key={user?.id ?? `user-${idx}`}>
+                      <td>{user?.name ?? 'Unknown'}</td>
+                      <td>{user?.email ?? 'Unknown'}</td>
                       <td>
-                        <span className={`role-badge role-${user.role}`}>
-                          {user.role}
+                        <span className={`role-badge role-${user?.role ?? 'unknown'}`}>
+                          {user?.role ?? 'unknown'}
                         </span>
                       </td>
-                      <td>{user.address || 'N/A'}</td>
+                      <td>{user?.address || 'N/A'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -323,6 +323,11 @@ const AddStoreForm = ({ onStoreAdded }) => {
   const [owners, setOwners] = useState([]);
   const [ownersLoading, setOwnersLoading] = useState(false);
   const [ownersError, setOwnersError] = useState('');
+  const [showCreateOwner, setShowCreateOwner] = useState(false);
+  const [ownerForm, setOwnerForm] = useState({ name: '', email: '', password: '' });
+  const [ownerCreating, setOwnerCreating] = useState(false);
+  const [ownerCreateError, setOwnerCreateError] = useState('');
+  const [ownerCreateSuccess, setOwnerCreateSuccess] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -336,7 +341,12 @@ const AddStoreForm = ({ onStoreAdded }) => {
     setOwnersError('');
     try {
       const response = await adminAPI.getUsers({ role: 'owner' });
-      setOwners(response.data || []);
+      const list = response.data || [];
+      setOwners(list);
+      // Set default owner if none selected and there are owners
+      if (list.length > 0 && !formData.owner_id) {
+        setFormData(prev => ({ ...prev, owner_id: list[0].id }));
+      }
       if (!response.data || response.data.length === 0) {
         setOwnersError('No store owners found. Create owner users first.');
       }
@@ -351,6 +361,31 @@ const AddStoreForm = ({ onStoreAdded }) => {
       setOwners([]);
     } finally {
       setOwnersLoading(false);
+    }
+  };
+
+  const handleOwnerFormChange = (e) => {
+    setOwnerForm({ ...ownerForm, [e.target.name]: e.target.value });
+  };
+
+  const handleCreateOwner = async (e) => {
+    e.preventDefault();
+    setOwnerCreating(true);
+    setOwnerCreateError('');
+    setOwnerCreateSuccess('');
+    try {
+      const res = await adminAPI.addUser({ ...ownerForm, role: 'owner' });
+      setOwnerCreateSuccess('Owner created successfully');
+      setOwnerForm({ name: '', email: '', password: '' });
+      // reload owners and default to the newly created owner
+      await loadOwners();
+      const newOwnerId = res?.data?.user?.id;
+      if (newOwnerId) setFormData(prev => ({ ...prev, owner_id: newOwnerId }));
+      setShowCreateOwner(false);
+    } catch (err) {
+      setOwnerCreateError(err.response?.data?.error || 'Failed to create owner');
+    } finally {
+      setOwnerCreating(false);
     }
   };
 
@@ -431,7 +466,38 @@ const AddStoreForm = ({ onStoreAdded }) => {
           {ownersLoading ? (
             <div>Loading owners...</div>
           ) : ownersError ? (
-            <div className="error-message">{ownersError}</div>
+            <div>
+              <div className="error-message">{ownersError}</div>
+              {/* Offer inline owner creation when none exist */}
+              {!showCreateOwner ? (
+                <button type="button" onClick={() => setShowCreateOwner(true)} style={{ marginTop: 8 }}>
+                  Create owner
+                </button>
+              ) : (
+                <div className="inline-owner-form" style={{ marginTop: 8, border: '1px solid #ddd', padding: 8 }}>
+                  {ownerCreateError && <div className="error-message">{ownerCreateError}</div>}
+                  {ownerCreateSuccess && <div className="success-message">{ownerCreateSuccess}</div>}
+                  <form onSubmit={handleCreateOwner}>
+                    <div className="form-group">
+                      <label>Name (20-60 chars)</label>
+                      <input name="name" value={ownerForm.name} onChange={handleOwnerFormChange} required minLength="20" maxLength="60" />
+                    </div>
+                    <div className="form-group">
+                      <label>Email</label>
+                      <input name="email" type="email" value={ownerForm.email} onChange={handleOwnerFormChange} required />
+                    </div>
+                    <div className="form-group">
+                      <label>Password</label>
+                      <input name="password" type="password" value={ownerForm.password} onChange={handleOwnerFormChange} required />
+                    </div>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button type="submit" disabled={ownerCreating}>{ownerCreating ? 'Creating...' : 'Create Owner'}</button>
+                      <button type="button" onClick={() => { setShowCreateOwner(false); setOwnerCreateError(''); setOwnerCreateSuccess(''); }}>Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              )}
+            </div>
           ) : (
             <select name="owner_id" value={formData.owner_id} onChange={handleChange} required>
               <option value="">Select Owner</option>

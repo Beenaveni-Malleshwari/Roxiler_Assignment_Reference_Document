@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // Allow overriding the API URL via env; otherwise use the deployed backend URL.
 // If you want to use the CRA proxy during local dev, set REACT_APP_API_URL to '/api'.
-const DEFAULT_REMOTE = 'https://roxiler-systems-backend-bu80.onrender.com';
+// Ensure the API base includes the /api prefix so paths like /auth/login map to /api/auth/login on the server
+const DEFAULT_REMOTE = 'https://roxiler-systems-backend-bu80.onrender.com/api';
 const API_BASE_URL = process.env.REACT_APP_API_URL || DEFAULT_REMOTE;
 
 const api = axios.create({

@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-// Allow overriding the API URL via env; otherwise use CRA proxy (`/api`).
-const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+// Allow overriding the API URL via env; otherwise use the deployed backend URL.
+// If you want to use the CRA proxy during local dev, set REACT_APP_API_URL to '/api'.
+const DEFAULT_REMOTE = 'https://roxiler-systems-backend-bu80.onrender.com';
+const API_BASE_URL = process.env.REACT_APP_API_URL || DEFAULT_REMOTE;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -24,7 +26,7 @@ api.interceptors.response.use(
     // No response indicates a network/CORS/connection problem
     if (!error.response) {
       console.error('API network or CORS error:', error);
-      const networkError = new Error('Unable to reach server. Please ensure the backend (port 5000) is running.');
+      const networkError = new Error(`Unable to reach server at ${API_BASE_URL}. Please ensure the backend is reachable.`);
       networkError.isNetworkError = true;
       return Promise.reject(networkError);
     }

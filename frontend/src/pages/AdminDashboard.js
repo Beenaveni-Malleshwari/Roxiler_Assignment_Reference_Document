@@ -340,15 +340,19 @@ const AddStoreForm = ({ onStoreAdded }) => {
     setOwnersLoading(true);
     setOwnersError('');
     try {
-      const response = await adminAPI.getUsers({ role: 'owner' });
-      const list = response.data || [];
+      // Fetch users (we'll accept both role 'owner' and 'admin' as possible store owners)
+      const response = await adminAPI.getUsers();
+      const allUsers = response.data || [];
+      const list = allUsers.filter(u => u.role === 'owner' || u.role === 'admin');
       setOwners(list);
-      // Set default owner if none selected and there are owners
+      // Prefer admin@roxiler.com as the default owner when present, otherwise use first owner
       if (list.length > 0 && !formData.owner_id) {
-        setFormData(prev => ({ ...prev, owner_id: list[0].id }));
+        const adminOwner = list.find(o => (o.email || '').toLowerCase() === 'admin@roxiler.com');
+        const defaultOwnerId = adminOwner ? adminOwner.id : list[0].id;
+        setFormData(prev => ({ ...prev, owner_id: defaultOwnerId }));
       }
-      if (!response.data || response.data.length === 0) {
-        setOwnersError('No store owners found. Create owner users first.');
+      if (!list || list.length === 0) {
+        setOwnersError('No store owners found. Create owner users first or use an admin as owner.');
       }
     } catch (error) {
       console.error('Error loading owners:', error);

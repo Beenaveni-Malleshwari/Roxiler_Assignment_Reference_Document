@@ -110,10 +110,11 @@ const addStore = (req, res) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (row) return res.status(400).json({ error: 'Store already exists with this email' });
 
-    // Verify owner exists and has owner role
-    db.get('SELECT id, role FROM Users WHERE id = ?', [owner_id], (err, owner) => {
+    // Verify owner exists and has owner role (allow admin to act as owner)
+    db.get('SELECT id, role, email FROM Users WHERE id = ?', [owner_id], (err, owner) => {
       if (err || !owner) return res.status(400).json({ error: 'Invalid owner' });
-      if (owner.role !== 'owner') return res.status(400).json({ error: 'User must have owner role' });
+      // Allow users with role 'owner' or 'admin' to be assigned as store owner
+      if (owner.role !== 'owner' && owner.role !== 'admin') return res.status(400).json({ error: 'User must have owner or admin role' });
 
       db.run(
         'INSERT INTO Stores (name, email, address, owner_id) VALUES (?, ?, ?, ?)',

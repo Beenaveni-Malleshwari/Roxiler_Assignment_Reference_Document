@@ -1,14 +1,10 @@
 import axios from 'axios';
 
-// Allow overriding the API URL via env; otherwise use the deployed backend URL.
-// If you want to use the CRA proxy during local dev, set REACT_APP_API_URL to '/api'.
-// Ensure the API base includes the /api prefix so paths like /auth/login map to /api/auth/login on the server
-const DEFAULT_REMOTE = 'https://roxiler-systems-backend-bu80.onrender.com/api';
-const API_BASE_URL = process.env.REACT_APP_API_URL || DEFAULT_REMOTE;
+// Use your deployed backend URL directly
+const API_BASE_URL = 'https://roxiler-systems-frontend-tp8k.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000, // 10s timeout to fail fast when backend is down
 });
 
 // Add token to requests
@@ -24,20 +20,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // No response indicates a network/CORS/connection problem
-    if (!error.response) {
-      console.error('API network or CORS error:', error);
-      const networkError = new Error(`Unable to reach server at ${API_BASE_URL}. Please ensure the backend is reachable.`);
-      networkError.isNetworkError = true;
-      return Promise.reject(networkError);
-    }
-
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
-
     return Promise.reject(error);
   }
 );

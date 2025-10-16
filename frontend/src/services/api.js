@@ -1,10 +1,12 @@
 import axios from 'axios';
 
-// Use your deployed backend URL directly
-const API_BASE_URL = 'https://roxiler-systems-frontend-tp8k.onrender.com/api';
+// Prefer environment variable set in frontend/.env, otherwise fallback to the known deployed backend
+const DEFAULT_REMOTE = 'https://roxiler-systems-backend-bu80.onrender.com/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || DEFAULT_REMOTE;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 10000, // 10s timeout to fail fast when backend is down
 });
 
 // Add token to requests
@@ -20,11 +22,20 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // No response indicates a network/CORS/connection problem
+    if (!error.response) {
+      console.error('API network or CORS error:', error);
+      const networkError = new Error(`Unable to reach server at ${API_BASE_URL}. Please ensure the backend is reachable.`);
+      networkError.isNetworkError = true;
+      return Promise.reject(networkError);
+    }
+
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
+
     return Promise.reject(error);
   }
 );

@@ -13,7 +13,8 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors(
     'http://localhost:3000', 
-      'https://roxiler-systems-frontend-tp8k.onrender.com',
+    'https://roxiler-systems-frontend-tp8k.onrender.com', // Your frontend URL
+    'https://roxiler-assignment-reference-document2.onrender.com' // Your backend URL (for testing)
 
 
 ));
